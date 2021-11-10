@@ -38,19 +38,39 @@ def generate_element(output_file):
     return element
 
 
-def generate_project():
+SUCCESS_MIRROR_LIST = [
+    {"name": "middle-earth", "aliases": {"foo": ["OOF/"], "bar": ["RAB/"],},},
+    {"name": "arrakis", "aliases": {"foo": ["OFO/"], "bar": ["RBA/"],},},
+    {"name": "oz", "aliases": {"foo": ["ooF/"], "bar": ["raB/"],}},
+]
+
+
+FAIL_MIRROR_LIST = [
+    {"name": "middle-earth", "aliases": {"foo": ["pony/"], "bar": ["horzy/"],},},
+    {"name": "arrakis", "aliases": {"foo": ["donkey/"], "bar": ["rabbit/"],},},
+    {"name": "oz", "aliases": {"foo": ["bear/"], "bar": ["buffalo/"],}},
+]
+
+
+class MirrorConfig:
+    NO_MIRRORS = 0
+    SUCCESS_MIRRORS = 1
+    FAIL_MIRRORS = 2
+
+
+def generate_project(mirror_config=MirrorConfig.SUCCESS_MIRRORS):
     project = {
         "name": "test",
         "min-version": "2.0",
         "element-path": "elements",
         "aliases": {"foo": "FOO/", "bar": "BAR/",},
-        "mirrors": [
-            {"name": "middle-earth", "aliases": {"foo": ["OOF/"], "bar": ["RAB/"],},},
-            {"name": "arrakis", "aliases": {"foo": ["OFO/"], "bar": ["RBA/"],},},
-            {"name": "oz", "aliases": {"foo": ["ooF/"], "bar": ["raB/"],}},
-        ],
         "plugins": [{"origin": "local", "path": "sources", "sources": ["fetch_source"]}],
     }
+    if mirror_config == MirrorConfig.SUCCESS_MIRRORS:
+        project["mirrors"] = SUCCESS_MIRROR_LIST
+    elif mirror_config == MirrorConfig.FAIL_MIRRORS:
+        project["mirrors"] = FAIL_MIRROR_LIST
+
     return project
 
 
@@ -116,7 +136,8 @@ def test_mirror_fetch_ref_storage(cli, tmpdir, datafiles, ref_storage, mirror):
 
 @pytest.mark.datafiles(DATA_DIR)
 @pytest.mark.usefixtures("datafiles")
-def test_mirror_fetch_multi(cli, tmpdir):
+@pytest.mark.parametrize("mirror_config", ["user-config", "project-config", "override-config"])
+def test_mirror_fetch_multi(cli, tmpdir, mirror_config):
     output_file = os.path.join(str(tmpdir), "output.txt")
     project_dir = str(tmpdir)
     element_dir = os.path.join(project_dir, "elements")
@@ -126,9 +147,18 @@ def test_mirror_fetch_multi(cli, tmpdir):
     element = generate_element(output_file)
     _yaml.roundtrip_dump(element, element_path)
 
+    project_mirror_config = MirrorConfig.NO_MIRRORS
+    if mirror_config == "project-config":
+        project_mirror_config = MirrorConfig.SUCCESS_MIRRORS
+    elif mirror_config == "override-config":
+        project_mirror_config = MirrorConfig.FAIL_MIRRORS
+
     project_file = os.path.join(project_dir, "project.conf")
-    project = generate_project()
+    project = generate_project(project_mirror_config)
     _yaml.roundtrip_dump(project, project_file)
+
+    if mirror_config in ("user-config", "override-config"):
+        cli.configure({"projects": {"test": {"mirrors": SUCCESS_MIRROR_LIST}}})
 
     result = cli.run(project=project_dir, args=["source", "fetch", element_name])
     result.assert_success()
