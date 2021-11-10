@@ -439,7 +439,7 @@ class Context:
         for overrides_project in self._project_overrides.keys():
             overrides = self._project_overrides.get_mapping(overrides_project)
             overrides.validate_keys(
-                ["artifacts", "source-caches", "options", "strict", "default-mirror", "remote-execution"]
+                ["artifacts", "source-caches", "options", "strict", "default-mirror", "remote-execution", "mirrors"]
             )
 
     @property
