@@ -54,6 +54,7 @@ from . import _signals
 from ._exceptions import BstError
 from .exceptions import ErrorDomain
 from ._protos.build.bazel.remote.execution.v2 import remote_execution_pb2
+from . import _site
 
 # Contains utils that have been rewritten in Cython for speed benefits
 # This makes them available when importing from utils
@@ -575,11 +576,14 @@ def link_files(
     return result
 
 
-def get_host_tool(name: str) -> str:
+def get_host_tool(name: str,
+                  search_subprojects_dir: str=None,
+                  ) -> str:
     """Get the full path of a host tool
 
     Args:
        name (str): The name of the program to search for
+       search_subprojects_dir (str): Optionally search in bundled subprojects directory
 
     Returns:
        The full path to the program, if found
@@ -588,6 +592,9 @@ def get_host_tool(name: str) -> str:
        :class:`.ProgramNotFoundError`
     """
     search_path = os.environ.get("PATH")
+    if search_subprojects_dir:
+        search_path = os.path.join(_site.subprojects, search_subprojects_dir) + os.pathsep + search_path
+
     program_path = shutil.which(name, path=search_path)
 
     if not program_path:
