@@ -26,6 +26,8 @@ exclude = '''
 '''
 
 [tool.cibuildwheel]
+build-frontend = "build"
+environment = { BST_BUNDLE_BUILDBOX = "1" }
 skip = [
   # BuildStream supports Python >= 3.7
   "cp36-*",
@@ -33,7 +35,6 @@ skip = [
   "pp*",
   # Skipping this niche archicture ~halves overall build time.
   "*_i686",
-  # This one fails to build with "NOTE: Shared object (.so) files found in this project.".
-  # possibly https://github.com/pypa/cibuildwheel/issues/901.
-  "cp310-musllinux_x86_64",
+  # The prebuilt BuildBox binaries link against GLibc so will work on manylinux but not musllinux
+  "*-musllinux_*",
 ]
