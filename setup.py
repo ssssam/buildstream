@@ -72,7 +72,8 @@ except ImportError:
 # install for BuildStream, we bundle prebuilt BuildBox binaries in our binary
 # wheel packages.
 #
-# FIXME: how to get hold of the binaries
+# The binaries are provided by the buildbox-integration Gitlab project:
+# https://gitlab.com/BuildGrid/buildbox/buildbox-integration
 #
 # If you want to build a wheel with the BuildBox binaries included, set the
 # env var "BST_BUNDLE_BUILDBOX=1" when running setup.py.
@@ -83,7 +84,6 @@ except ValueError:
     print("BST_BUNDLE_BUILDBOX must be an integer. Please set it to '1' to enable, '0' to disable", file=sys.stderr)
     raise SystemExit(1)
 
-print("Hello, the env is: %s", os.environ)
 
 def list_buildbox_binaries():
     expected_binaries = [
@@ -101,12 +101,12 @@ def list_buildbox_binaries():
         missing_binaries = [path for path in buildbox_binaries if not path.is_file()]
         if missing_binaries:
             paths_text = "\n".join(
-                ["  * {}".format(path.relative_to(bst_dir)) for path in missing_binaries]
+                ["  * {}".format(path) for path in missing_binaries]
             )
             print(
                 "Expected BuildBox binaries were not found. "
                 "Set BST_BUNDLE_BUILDBOX=0 or provide:\n\n"
-                "{}".format(paths_text)
+                "{}\n".format(paths_text)
             )
             raise SystemExit(1)
 
