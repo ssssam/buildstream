@@ -67,7 +67,7 @@ jobs:
 
       - name: Fetch latest BuildBox release
         run: |
-          wget "${CI_BUILDBOX_INTEGRATION_GITLAB_PROJECT}"/-/releases/permalink/latest/downloads/binaries.tgz'
+          wget "${CI_BUILDBOX_INTEGRATION_GITLAB_PROJECT}"/-/releases/permalink/latest/downloads/binaries.tgz
           mkdir -p src/buildstream/subprojects/buildbox
           tar --extract --file ./binaries.tgz --directory src/buildstream/subprojects/buildbox
 
