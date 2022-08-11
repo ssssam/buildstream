@@ -66,10 +66,7 @@ jobs:
           fetch-depth: 0
 
       - name: Fetch latest BuildBox release
-        run: |
-          wget https://gitlab.com/tristanvb/buildbox-integration/-/releases/permalink/latest/downloads/binaries.tgz
-          mkdir -p src/buildstream/subprojects/buildbox
-          tar --extract --file ./binaries.tgz --directory src/buildstream/subprojects/buildbox
+        run: ${GITHUB_WORKSPACE}/.github/fetch-latest-buildbox-release.sh
 
       - name: Build wheels
         run: pipx run cibuildwheel==2.8.1
