@@ -5,6 +5,7 @@ requires = [
     # In order to build wheels, and as required by PEP 517
     "wheel",
     "Cython"
+    "packaging",
 ]
 build-backend = "setuptools.build_meta"
 
