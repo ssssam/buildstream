@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_docs:
-    name: Build documentation
+    name: "Build documentation tarball"
     runs-on: ubuntu-18.04
     steps:
     - name: Checkout code
@@ -64,6 +64,35 @@ jobs:
         with:
           name: wheels
           path: ./wheelhouse/*.whl
+
+  test_wheels:
+    name: Test Python wheel packages on ${{ matrix.os }}
+    needs: [build_wheels]
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        # The names here should map to a valid service defined in
+        # "../compose/ci.docker-compose.yml"
+        test-name:
+          - wheels-manylinux_2_28-cp37
+          - wheels-manylinux_2_28-cp38
+          - wheels-manylinux_2_28-cp39
+          - wheels-manylinux_2_28-cp310
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: wheels
+          path: ./wheelhouse
+
+      - name: Run tests with Docker Compose
+        run: |
+          ${GITHUB_WORKSPACE}/.github/run-ci.sh ${{ matrix.test-name }}
 
   publish_docs:
     needs: build
