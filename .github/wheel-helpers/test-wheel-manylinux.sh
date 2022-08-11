@@ -11,6 +11,8 @@ set -eux
 COMPATIBILITY_TAGS=$1
 PYTHON=$2
 
+dnf install -y bubblewrap
+
 "$PYTHON" -m venv /tmp/venv
 /tmp/venv/bin/pip3 install ./wheelhouse/BuildStream-*-$COMPATIBILITY_TAGS.whl buildstream-plugins
 
