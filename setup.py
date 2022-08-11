@@ -23,10 +23,30 @@ from pathlib import Path
 import re
 import sys
 
+import packaging.version
+
 
 ###################################
 # Ensure we have a version number #
 ###################################
+
+def mark_unstable_release_for_pypi(version):
+    # When publishing to PyPI we must be sure that unstable releases are
+    # marked as such, so `pip install` doesn't install them by default.
+
+    v = packaging.version.parse(version)
+
+    # BuildStream version scheme: if MINOR version is odd, then
+    # this is an unstable release.
+    is_unstable_release = (v.minor % 2 != 0)
+
+    # Python PEP440 version scheme: use an explicit postfix to mark development
+    # and prereleases.
+    if not v.is_devrelease and not v.is_prerelease and not v.is_postrelease:
+        if is_unstable_release:
+            return version + '.dev0'
+
+    return version
 
 # Add local directory to the path, in order to be able to import versioneer
 sys.path.append(os.path.dirname(__file__))
@@ -40,6 +60,8 @@ if version.startswith("0+untagged"):
         file=sys.stderr,
     )
     sys.exit(1)
+
+version = mark_unstable_release_for_pypi(version)
 
 
 ##################################################################
