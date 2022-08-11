@@ -72,7 +72,8 @@ except ImportError:
 # install for BuildStream, we bundle prebuilt BuildBox binaries in our binary
 # wheel packages.
 #
-# FIXME: how to get hold of the binaries
+# The binaries are provided by the buildbox-integration Gitlab project:
+# https://gitlab.com/BuildGrid/buildbox/buildbox-integration
 #
 # If you want to build a wheel with the BuildBox binaries included, set the
 # env var "BST_BUNDLE_BUILDBOX=1" when running setup.py.
