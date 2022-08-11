@@ -8,11 +8,11 @@
 
 set -eux
 
-WHEEL=$1
+COMPATIBILITY_TAGS=$1
 PYTHON=$2
 
 "$PYTHON" -m venv /tmp/venv
-/tmp/venv/bin/pip3 install "$WHEEL"
+/tmp/venv/bin/pip3 install ./wheelhouse/BuildStream-*-$COMPATIBILITY_TAGS.whl
 
 cd doc/examples/autotools
 bst build hello.bst
