@@ -93,7 +93,7 @@ services:
   wheels-manylinux_2_28-cp37:
     <<: *tests-template
     image: quay.io/pypa/manylinux_2_28_x86_64
-    command: .github/wheel-helpers/test-wheel-manylinux.sh cp37-cp37-manylinux_2_28_x86_64 /opt/python/cp37-cp37m/bin/python3
+    command: .github/wheel-helpers/test-wheel-manylinux.sh cp37-cp37m-manylinux_2_28_x86_64 /opt/python/cp37-cp37m/bin/python3
 
   wheels-manylinux_2_28-cp38:
     <<: *tests-template

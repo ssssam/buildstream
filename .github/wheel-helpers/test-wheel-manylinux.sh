@@ -15,4 +15,4 @@ PYTHON=$2
 /tmp/venv/bin/pip3 install ./wheelhouse/BuildStream-*-$COMPATIBILITY_TAGS.whl
 
 cd doc/examples/autotools
-bst build hello.bst
+/tmp/venv/bin/bst build hello.bst
