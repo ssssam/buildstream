@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Download latest release binaries of BuildBox. These are statically linked
+# binaries produced by the buildbox-integration GitLab project, which we
+# bundle into BuildStream wheel packages.
+
 set -eux
 
 wget https://gitlab.com/tristanvb/buildbox-integration/-/releases/permalink/latest/downloads/binaries.tgz
