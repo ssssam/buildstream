@@ -12,7 +12,7 @@ COMPATIBILITY_TAGS=$1
 PYTHON=$2
 
 "$PYTHON" -m venv /tmp/venv
-/tmp/venv/bin/pip3 install ./wheelhouse/BuildStream-*-$COMPATIBILITY_TAGS.whl
+/tmp/venv/bin/pip3 install ./wheelhouse/BuildStream-*-$COMPATIBILITY_TAGS.whl buildstream-plugins
 
 cd doc/examples/autotools
 /tmp/venv/bin/bst build hello.bst
