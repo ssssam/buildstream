@@ -6,7 +6,7 @@
 
 set -eux
 
-wget https://gitlab.com/tristanvb/buildbox-integration/-/releases/permalink/latest/downloads/binaries.tgz
+wget https://gitlab.com/buildgrid/buildbox/buildbox-integration/-/releases/permalink/latest/downloads/binaries.tgz
 
 mkdir -p src/buildstream/subprojects/buildbox
 tar --extract --file ./binaries.tgz --directory src/buildstream/subprojects/buildbox
